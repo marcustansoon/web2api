@@ -1,0 +1,15 @@
+# git-crypt: what gets encrypted before it leaves this machine.
+#
+# Encrypt EVERYTHING by default. A default-deny rule is the only safe shape here:
+# with a per-extension allowlist, the first file with a new extension would be
+# committed in plaintext, and a plaintext commit cannot be taken back once pushed.
+* filter=git-crypt diff=git-crypt
+
+# This file is the ONE unavoidable exception: git has to read it to know which
+# files to send through the filter, so it cannot be encrypted by that same filter.
+# It gives nothing away — these three rules are all it says.
+.gitattributes !filter !diff
+
+# Keep line endings byte-identical. Encrypted blobs must not be touched by CRLF
+# conversion, and the working tree on both PCs must hash the same way.
+* -text
